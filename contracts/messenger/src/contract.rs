@@ -4,7 +4,9 @@ use cosmwasm_std::{to_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response,
 use cw2::set_contract_version;
 
 use crate::error::ContractError;
-use crate::msg::{ExecuteMsg, InstantiateMsg, MigrateMsg, QueryMsg};
+use crate::msg::{
+  ExecuteMsg, GetChatsResponse, GetMessagesResponse, InstantiateMsg, MigrateMsg, QueryMsg,
+};
 use crate::state::{State, STATE};
 
 // version info for migration info
@@ -28,12 +30,42 @@ pub fn execute(
   info: MessageInfo,
   msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
-  match msg {}
+  match msg {
+    ExecuteMsg::SendMessage { data, to } => send_message(deps, info, data, to),
+  }
+}
+
+fn send_message(
+  deps: DepsMut,
+  info: MessageInfo,
+  data: String,
+  to: String,
+) -> Result<Response, ContractError> {
+  Ok(Response::new())
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
-  match msg {}
+  match msg {
+    QueryMsg::GetChats { user, offset } => to_binary(&get_chats(deps, user, offset)?),
+    QueryMsg::GetMessages { chat_id, offset } => to_binary(&get_messages(deps, chat_id, offset)?),
+  }
+}
+
+fn get_chats(deps: Deps, user: String, offset: u128) -> StdResult<GetChatsResponse> {
+  Ok(GetChatsResponse {
+    chats: vec![],
+    next_offset: 0u128,
+    total_count: 0u128,
+  })
+}
+
+fn get_messages(deps: Deps, chat_id: u128, offset: u128) -> StdResult<GetMessagesResponse> {
+  Ok(GetMessagesResponse {
+    messages: vec![],
+    next_offset: 0u128,
+    total_count: 0u128,
+  })
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
