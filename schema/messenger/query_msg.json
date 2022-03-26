@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QueryMsg",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": [
+        "get_messages"
+      ],
+      "properties": {
+        "get_messages": {
+          "type": "object",
+          "required": [
+            "chat_id"
+          ],
+          "properties": {
+            "chat_id": {
+              "type": "integer",
+              "format": "uint64",
+              "minimum": 0.0
+            },
+            "last_message_id": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "format": "uint64",
+              "minimum": 0.0
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "get_chats"
+      ],
+      "properties": {
+        "get_chats": {
+          "type": "object",
+          "required": [
+            "user"
+          ],
+          "properties": {
+            "last_user": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "user": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  ]
+}
