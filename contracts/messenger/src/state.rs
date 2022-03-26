@@ -7,12 +7,13 @@ use cw_storage_plus::{Item, Map, U64Key};
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct State {
   pub last_chat_id: u64,
-  pub last_msg_id: u64,
+  pub last_message_id: u64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Message {
   pub timestamp: Timestamp,
+  pub from: String,
   pub text: String,
 }
 

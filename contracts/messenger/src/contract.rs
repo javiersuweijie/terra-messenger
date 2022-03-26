@@ -32,22 +32,60 @@ pub fn instantiate(
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn execute(
   deps: DepsMut,
-  _env: Env,
+  env: Env,
   info: MessageInfo,
   msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
   match msg {
-    ExecuteMsg::SendMessage { data, to } => send_message(deps, info, data, to),
+    ExecuteMsg::SendMessage { data, to } => send_message(deps, info, env, data, to),
   }
 }
 
 fn send_message(
   deps: DepsMut,
   info: MessageInfo,
+  env: Env,
   data: String,
   to: String,
 ) -> Result<Response, ContractError> {
-  Ok(Response::new())
+  let from = info.sender;
+  let to_addr = deps.api.addr_validate(&to)?;
+  let message = Message {
+    timestamp: env.block.time,
+    from: from.to_string(),
+    text: data,
+  };
+
+  let state = STATE.load(deps.storage)?;
+
+  // Check if chat exists, else start a new chat
+  let (chat_id, new_chat) = match CHATS.may_load(deps.storage, (&from, &to_addr))? {
+    Some(chat_id) => (chat_id, false),
+    None => (state.last_chat_id + 1, true),
+  };
+
+  if new_chat {
+    CHATS.save(deps.storage, (&from, &to_addr), &chat_id)?;
+    CHATS.save(deps.storage, (&to_addr, &from), &chat_id)?;
+  }
+
+  let message_id = state.last_message_id + 1;
+
+  MESSAGES.save(
+    deps.storage,
+    (U64Key::from(chat_id), U64Key::from(message_id)),
+    &message,
+  )?;
+
+  STATE.update(deps.storage, |mut s| -> StdResult<_> {
+    if new_chat {
+      s.last_chat_id = chat_id;
+    }
+    s.last_message_id = message_id;
+    Ok(s)
+  })?;
+
+  Ok(Response::new().add_attributes(vec![("message_id", message_id.to_string())]))
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
@@ -238,6 +276,7 @@ mod tests {
           (chat_id.clone(), U64Key::from(n)),
           &Message {
             text: format!("text{}", n),
+            from: "user1".to_string(),
             timestamp: Timestamp::from_nanos(1_000_000_202 + n),
           },
         )
@@ -271,5 +310,106 @@ mod tests {
     last_message_id = messages.messages[4].message_id;
     messages = get_messages(deps.as_ref(), 1, Some(last_message_id)).unwrap();
     assert_eq!(messages.messages.len(), 0);
+  }
+
+  #[test]
+  fn send_first_message() {
+    let mut deps = mock_dependencies(&vec![]);
+    let info = mock_info("user1", &vec![]);
+    let env = mock_env();
+
+    STATE
+      .save(
+        deps.as_mut().storage,
+        &State {
+          last_message_id: 0,
+          last_chat_id: 0,
+        },
+      )
+      .unwrap();
+    send_message(
+      deps.as_mut(),
+      info,
+      env,
+      String::from("hello world"),
+      String::from("terra1jh4th9u5zk4wa38wgtmxjmpsvwnsjevjqaz8h9"),
+    )
+    .unwrap();
+
+    let state = STATE.load(deps.as_mut().storage).unwrap();
+    assert_eq!(state.last_chat_id, 1);
+    assert_eq!(state.last_message_id, 1);
+
+    let message = MESSAGES
+      .load(deps.as_mut().storage, (U64Key::from(1), U64Key::from(1)))
+      .unwrap();
+    assert_eq!(message.text, "hello world");
+    assert_eq!(message.from, "user1");
+  }
+
+  #[test]
+  fn send_follow_up_message() {
+    let mut deps = mock_dependencies(&vec![]);
+    let info = mock_info("user1", &vec![]);
+    let env = mock_env();
+    let user1 = Addr::unchecked("user1");
+    let user2 = Addr::unchecked("terra1jh4th9u5zk4wa38wgtmxjmpsvwnsjevjqaz8h9");
+
+    STATE
+      .save(
+        deps.as_mut().storage,
+        &State {
+          last_message_id: 1,
+          last_chat_id: 1,
+        },
+      )
+      .unwrap();
+
+    CHATS
+      .save(deps.as_mut().storage, (&user1, &user2), &1)
+      .unwrap();
+    CHATS
+      .save(deps.as_mut().storage, (&user2, &user1), &1)
+      .unwrap();
+
+    send_message(
+      deps.as_mut(),
+      info,
+      env,
+      String::from("hello world"),
+      String::from("terra1jh4th9u5zk4wa38wgtmxjmpsvwnsjevjqaz8h9"),
+    )
+    .unwrap();
+
+    let state = STATE.load(deps.as_mut().storage).unwrap();
+    assert_eq!(state.last_chat_id, 1);
+    assert_eq!(state.last_message_id, 2);
+
+    let message = MESSAGES
+      .load(deps.as_mut().storage, (U64Key::from(1), U64Key::from(2)))
+      .unwrap();
+    assert_eq!(message.text, "hello world");
+    assert_eq!(message.from, "user1");
+
+    let info2 = mock_info("terra1jh4th9u5zk4wa38wgtmxjmpsvwnsjevjqaz8h9", &vec![]);
+    let env2 = mock_env();
+    send_message(
+      deps.as_mut(),
+      info2,
+      env2,
+      String::from("bye world"),
+      String::from("user1"),
+    )
+    .unwrap();
+
+    let state = STATE.load(deps.as_mut().storage).unwrap();
+    assert_eq!(state.last_chat_id, 1);
+    assert_eq!(state.last_message_id, 3);
+
+    let message = MESSAGES
+      .load(deps.as_mut().storage, (U64Key::from(1), U64Key::from(3)))
+      .unwrap();
+    assert_eq!(message.text, "bye world");
+    assert_eq!(message.from, "terra1jh4th9u5zk4wa38wgtmxjmpsvwnsjevjqaz8h9");
   }
 }
