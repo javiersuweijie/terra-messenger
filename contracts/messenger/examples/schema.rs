@@ -3,12 +3,12 @@ use std::fs::create_dir_all;
 
 use cosmwasm_schema::{export_schema, remove_schemas, schema_for};
 
-use counter::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
-use counter::state::State;
+use messenger::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
+use messenger::state::State;
 
 fn main() {
   let mut out_dir = current_dir().unwrap();
-  out_dir.push("schema/counter");
+  out_dir.push("schema/messenger");
   create_dir_all(&out_dir).unwrap();
   remove_schemas(&out_dir).unwrap();
 
