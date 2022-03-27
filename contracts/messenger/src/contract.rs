@@ -23,9 +23,16 @@ const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 pub fn instantiate(
   deps: DepsMut,
   _env: Env,
-  info: MessageInfo,
-  msg: InstantiateMsg,
+  _info: MessageInfo,
+  _msg: InstantiateMsg,
 ) -> Result<Response, ContractError> {
+  STATE.save(
+    deps.storage,
+    &State {
+      last_chat_id: 0,
+      last_message_id: 0,
+    },
+  )?;
   Ok(Response::new())
 }
 
@@ -127,10 +134,7 @@ fn get_chats(deps: Deps, user: String, last_user: Option<String>) -> StdResult<G
     })
     .collect();
 
-  Ok(GetChatsResponse {
-    chats: chats,
-    total_count: 0u128,
-  })
+  Ok(GetChatsResponse { chats: chats })
 }
 
 fn get_messages(
@@ -166,10 +170,7 @@ fn get_messages(
       }
     })
     .collect();
-  Ok(GetMessagesResponse {
-    messages: messages,
-    total_count: 0u64,
-  })
+  Ok(GetMessagesResponse { messages: messages })
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
@@ -191,13 +192,7 @@ mod tests {
     let deps = mock_dependencies(&vec![]);
     let user1 = Addr::unchecked("user1");
     let chats = get_chats(deps.as_ref(), user1.to_string(), None).unwrap();
-    assert_eq!(
-      chats,
-      GetChatsResponse {
-        chats: vec![],
-        total_count: 0,
-      }
-    )
+    assert_eq!(chats, GetChatsResponse { chats: vec![] })
   }
 
   #[test]
@@ -219,7 +214,6 @@ mod tests {
           user2: user2.to_string(),
           chat_id: chat1,
         }],
-        total_count: 0,
       }
     )
   }

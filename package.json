@@ -1,0 +1,19 @@
+{
+    "name": "messenger",
+    "description": "This is a basic template for developing smart contract and web app together. This template is based on [cw-template of CosmWasm](https://github.com/InterWasm/cw-template).",
+    "version": "1.0.0",
+    "main": "\"\"",
+    "directories": {
+        "test": "tests"
+    },
+    "dependencies": {
+        "@terra-money/terra.js": "^3.0.9",
+        "ts-node": "^10.7.0",
+        "tsc": "^2.0.4"
+    },
+    "scripts": {
+        "test": "\"\""
+    },
+    "author": "",
+    "license": "ISC"
+}

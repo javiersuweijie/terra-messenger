@@ -30,7 +30,6 @@ pub enum QueryMsg {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct GetChatsResponse {
   pub chats: Vec<Chat>,
-  pub total_count: u128,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -50,5 +49,4 @@ pub struct Message {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct GetMessagesResponse {
   pub messages: Vec<Message>,
-  pub total_count: u64,
 }
