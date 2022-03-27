@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Compose from '../Compose';
 import Toolbar from '../Toolbar';
 import ToolbarButton from '../ToolbarButton';
@@ -17,7 +17,19 @@ import { walletState } from '../../data/wallet';
 const MY_USER_ID = 'apple';
 
 export default function MessageList(props) {
-  //   const [messages, setMessages] = useState([]);
+  const messagesEndRef = useRef(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+  };
+  const messages = useRecoilValue(messagesState);
+
+  useEffect(
+    () => {
+      scrollToBottom();
+    },
+    [messages],
+  );
+
   const { disconnect, status } = useWallet();
   const wallet = useRecoilValue(walletState);
 
@@ -26,11 +38,8 @@ export default function MessageList(props) {
   };
 
   const checkIsMine = address => {
-    console.log(wallet.walletAddress, address);
     return wallet.walletAddress === address;
   };
-
-  const messages = useRecoilValue(messagesState);
 
   const renderMessages = () => {
     let i = 0;
@@ -109,6 +118,7 @@ export default function MessageList(props) {
       />
 
       <div className="message-list-container">{renderMessages()}</div>
+      <div ref={messagesEndRef} />
 
       <Compose
         rightItems={[

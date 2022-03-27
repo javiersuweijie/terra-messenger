@@ -15,19 +15,40 @@ export const messagesState = selector({
       URL: network.lcd,
       chainID: network.chainId,
     });
-    if (!wallet || selectedChat === undefined) {
+    if (!wallet || selectedChat === {}) {
       return [];
     }
+    const { id: chatId } = selectedChat;
     try {
-      const { messages } = await lcd.wasm.contractQuery(
+      let fullMessages = [];
+      let { messages } = await lcd.wasm.contractQuery(
         network.messengerContract,
         {
           get_messages: {
-            chat_id: selectedChat,
+            chat_id: chatId,
           },
         },
       );
-      return messages.map(m => {
+      fullMessages = fullMessages.concat(messages);
+      while (messages.length > 0) {
+        const lastMessage = fullMessages[fullMessages.length - 1];
+        if (lastMessage) {
+          const res = await lcd.wasm.contractQuery(network.messengerContract, {
+            get_messages: {
+              chat_id: chatId,
+              last_message_id: lastMessage.message_id,
+            },
+          });
+          messages = res.messages;
+          fullMessages = fullMessages.concat(messages);
+        } else {
+          break;
+        }
+      }
+      fullMessages.sort((a, b) => {
+        return a.message_id - b.message_id;
+      });
+      return fullMessages.map(m => {
         return {
           ...m,
           timestamp: Number(m.timestamp.slice(0, m.timestamp.length - 6)),

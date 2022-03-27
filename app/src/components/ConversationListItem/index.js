@@ -19,11 +19,14 @@ export default function ConversationListItem(props) {
   };
 
   const selectChat = () => {
-    setSelectedChat(id);
+    setSelectedChat({
+      id: id,
+      name: name,
+    });
   };
 
   const isSelected = () => {
-    return selectedChat === id;
+    return selectedChat.id === id;
   };
 
   return (

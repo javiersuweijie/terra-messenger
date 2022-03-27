@@ -5,7 +5,7 @@ import { LCDClient } from '@terra-money/terra.js';
 
 export const selectedChatState = atom({
   key: 'SelectedChat',
-  default: undefined,
+  default: {},
 });
 
 export const chatsState = selector({
