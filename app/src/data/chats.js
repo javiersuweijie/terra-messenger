@@ -3,6 +3,11 @@ import { walletState } from './wallet';
 import { networkState } from './networks';
 import { LCDClient } from '@terra-money/terra.js';
 
+export const selectedChatState = atom({
+  key: 'SelectedChat',
+  default: undefined,
+});
+
 export const chatsState = selector({
   key: 'Chats',
   default: [],
@@ -24,7 +29,6 @@ export const chatsState = selector({
           user: wallet.walletAddress,
         },
       });
-      console.log(chats);
       return chats.chats.map(c => {
         return {
           name: c.user2,

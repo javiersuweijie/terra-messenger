@@ -31,7 +31,7 @@ export const Networks = {
     name: 'localterra',
     chainID: 'localterra',
     lcd: 'http://localhost:1317',
-    messengerContract: 'terra1sh36qn08g4cqg685cfzmyxqv2952q6r8gpczrt',
+    messengerContract: 'terra1tndcaqxkpc5ce9qee5ggqf430mr2z3pefe5wj6',
   },
 };
 

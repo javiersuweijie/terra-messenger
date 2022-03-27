@@ -12,25 +12,23 @@ import {
 import './MessageList.css';
 import { messagesState } from '../../data/messages';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { walletState } from '../../data/wallet';
 
 const MY_USER_ID = 'apple';
 
 export default function MessageList(props) {
   //   const [messages, setMessages] = useState([]);
   const { disconnect, status } = useWallet();
+  const wallet = useRecoilValue(walletState);
 
   const isConnected = () => {
     return status === WalletStatus.WALLET_CONNECTED;
   };
 
-  //   useEffect(() => {
-  //     getMessages();
-  //   }, []);
-
-  //   const getMessages = () => {
-  //     var tempMessages = [];
-  //     setMessages([...messages, ...tempMessages]);
-  //   };
+  const checkIsMine = address => {
+    console.log(wallet.walletAddress, address);
+    return wallet.walletAddress === address;
+  };
 
   const messages = useRecoilValue(messagesState);
 
@@ -43,7 +41,7 @@ export default function MessageList(props) {
       let previous = messages[i - 1];
       let current = messages[i];
       let next = messages[i + 1];
-      let isMine = current.author === MY_USER_ID;
+      let isMine = checkIsMine(current.from);
       let currentMoment = moment(current.timestamp);
       let prevBySameAuthor = false;
       let nextBySameAuthor = false;
@@ -70,7 +68,7 @@ export default function MessageList(props) {
       if (next) {
         let nextMoment = moment(next.timestamp);
         let nextDuration = moment.duration(nextMoment.diff(currentMoment));
-        nextBySameAuthor = next.author === current.author;
+        nextBySameAuthor = next.from === current.from;
 
         if (nextBySameAuthor && nextDuration.as('hours') < 1) {
           endsSequence = false;
