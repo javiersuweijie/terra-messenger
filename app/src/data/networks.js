@@ -10,7 +10,7 @@ export const networkState = selector({
       console.log('network changing to ', Networks[wallet.network.name]);
       return Networks[wallet.network.name];
     } else {
-      return Networks.mainnet;
+      return DefaultNetwork;
     }
   },
 });
@@ -25,12 +25,14 @@ export const Networks = {
     name: 'testnet',
     chainID: 'bombay-12',
     lcd: 'https://bombay-lcd.terra.dev',
+    messengerContract: '',
   },
   localterra: {
     name: 'localterra',
     chainID: 'localterra',
     lcd: 'http://localhost:1317',
+    messengerContract: 'terra1sh36qn08g4cqg685cfzmyxqv2952q6r8gpczrt',
   },
 };
 
-export const DefaultNetwork = Networks.testnet;
+export const DefaultNetwork = Networks.localterra;

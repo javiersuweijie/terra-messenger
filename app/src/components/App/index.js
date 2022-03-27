@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import Messenger from '../Messenger';
 import Modal from 'react-modal';
 import { WalletSubscriber } from '../WalletSubscriber';
@@ -11,8 +11,11 @@ Modal.setAppElement('#root');
 export default function App() {
   return (
     <RecoilRoot>
-      <WalletConnection />
-      <Messenger />
+      <Suspense fallback={<div>Loading...</div>}>
+        <WalletSubscriber />
+        <WalletConnection />
+        <Messenger />
+      </Suspense>
     </RecoilRoot>
   );
 }

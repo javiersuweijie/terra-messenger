@@ -18,8 +18,10 @@ export function WalletConnection() {
     connect,
     install,
     status,
+    network,
   } = useWallet();
 
+  console.log('network: ', network);
   const modalIsOpen = () => {
     return status !== WalletStatus.WALLET_CONNECTED;
   };

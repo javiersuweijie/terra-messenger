@@ -6,7 +6,6 @@ import * as serviceWorker from './serviceWorker';
 import { WalletProvider, getChainOptions } from '@terra-money/wallet-provider';
 
 getChainOptions().then(chainOptions => {
-  console.log(chainOptions);
   ReactDOM.render(
     <WalletProvider {...chainOptions}>
       <App />
