@@ -13,11 +13,15 @@ This is an experimental dapp that tries to re-create a messenger like experience
 
 ## Screenshots
 
-Connecting your wallet
+### Connecting your wallet
+![image](https://user-images.githubusercontent.com/3447315/160289304-467a4f19-36dc-4e68-8cdf-83d0e7086bbe.png)
 
-Accessing your chats
+### Accessing your chats
+![image](https://user-images.githubusercontent.com/3447315/160289319-89e8a7ad-d18f-48df-b8da-821a86dd7045.png)
 
 ## Contract Design
+![image](https://user-images.githubusercontent.com/3447315/160289339-b2954da0-5ca0-42c9-95db-af97670cc575.png)
+
 
 ### Query Messages
 
