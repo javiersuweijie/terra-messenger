@@ -13,6 +13,7 @@ import './MessageList.css';
 import { messagesState } from '../../data/messages';
 import { useRecoilValue, useRecoilRefresher_UNSTABLE } from 'recoil';
 import { walletState } from '../../data/wallet';
+import { selectedChatState } from '../../data/chats';
 
 const MY_USER_ID = 'apple';
 
@@ -22,6 +23,7 @@ export default function MessageList(props) {
     messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
   };
   const messages = useRecoilValue(messagesState);
+  const { name } = useRecoilValue(selectedChatState);
 
   useEffect(
     () => {
@@ -105,14 +107,14 @@ export default function MessageList(props) {
   return (
     <div className="message-list">
       <Toolbar
-        title="Conversation Title"
+        title={name ? name : 'Please select/start a conversation'}
         rightItems={[
           <button
             className="disconnection-modal"
             onClick={disconnect}
             disabled={!isConnected()}
           >
-            Disconnect
+            {isConnected() ? 'Disconnect' : 'Connect'}
           </button>,
         ]}
       />
