@@ -6,7 +6,12 @@ import {
 } from './helpers';
 
 const { terra, wallet, networkConfig } = getDeploymentConfig('localterra');
-const user2 = 'terra17lmam6zguazs5q5u6z5mmx76uj63gldnse2pdp';
+const mk = new MnemonicKey({
+  mnemonic:
+    'quality vacuum heart guard buzz spike sight swarm shove special gym robust assume sudden deposit grid alcohol choice devote leader tilt noodle tide penalty',
+});
+const user2Wallet = terra.wallet(mk);
+const user2 = user2Wallet.key.accAddress;
 const user3 = 'terra1757tkx08n0cqrw7p86ny9lnxsqeth0wgp0em95';
 const user4 = 'terra199vw7724lzkwz6lf2hsx04lrxfkz09tg8dlp6r';
 
@@ -52,6 +57,14 @@ for (let i = 0; i < 15; i++) {
           },
         },
       ),
+    ]);
+    await sendTransaction(terra, user2Wallet, [
+      new MsgExecuteContract(user2, networkConfig.messengerAddr, {
+        send_message: {
+          to: wallet.key.accAddress,
+          data: chat.message + ' back',
+        },
+      }),
     ]);
   }
 })();

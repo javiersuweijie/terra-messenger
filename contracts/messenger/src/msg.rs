@@ -41,6 +41,7 @@ pub struct Chat {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Message {
+  pub from: String,
   pub message_id: u64,
   pub timestamp: Timestamp,
   pub text: String,

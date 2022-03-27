@@ -158,6 +158,7 @@ fn get_messages(
             Ok(mid) => {
               let message = i.1;
               Some(MessageResponse {
+                from: message.from,
                 message_id: Endian::from_be_bytes(mid),
                 timestamp: message.timestamp,
                 text: message.text,
@@ -282,6 +283,7 @@ mod tests {
     assert_eq!(
       messages.messages[0],
       MessageResponse {
+        from: "user1".into(),
         message_id: 14,
         text: "text14".into(),
         timestamp: Timestamp::from_nanos(1_000_000_202 + 14),
@@ -295,6 +297,7 @@ mod tests {
     assert_eq!(
       messages.messages[0],
       MessageResponse {
+        from: "user1".into(),
         message_id: 4,
         text: "text4".into(),
         timestamp: Timestamp::from_nanos(1_000_000_202 + 4),
