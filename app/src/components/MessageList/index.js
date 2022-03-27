@@ -11,7 +11,7 @@ import {
 } from '@terra-money/wallet-provider';
 import './MessageList.css';
 import { messagesState } from '../../data/messages';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useRecoilRefresher_UNSTABLE } from 'recoil';
 import { walletState } from '../../data/wallet';
 
 const MY_USER_ID = 'apple';

@@ -67,6 +67,7 @@ export default function Compose(props) {
           network.messengerContract,
         );
       }
+      event.target.value = '';
     },
     [postTx, name],
   );

@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ConversationList from '../ConversationList';
 import MessageList from '../MessageList';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilRefresher_UNSTABLE } from 'recoil';
 import { messagesState } from '../../data/messages';
 import './Messenger.css';
 
 export default function Messenger(props) {
-  const setMessages = useSetRecoilState(messagesState);
+  const resetChat = useRecoilRefresher_UNSTABLE(messagesState);
+
+  useEffect(() => {
+    setInterval(() => {
+      resetChat();
+    }, 5000);
+  });
 
   return (
     <div className="messenger">
