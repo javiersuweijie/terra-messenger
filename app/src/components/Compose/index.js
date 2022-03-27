@@ -6,8 +6,13 @@ import {
 } from '@terra-money/terra.js';
 import { useWallet } from '@terra-money/wallet-provider';
 import React, { useCallback } from 'react';
-import { useRecoilValue } from 'recoil';
+import {
+  useRecoilRefresher_UNSTABLE,
+  useRecoilValue,
+  useResetRecoilState,
+} from 'recoil';
 import { selectedChatState } from '../../data/chats';
+import { messagesState } from '../../data/messages';
 import { networkState } from '../../data/networks';
 import { walletState } from '../../data/wallet';
 import './Compose.css';
@@ -17,6 +22,7 @@ export default function Compose(props) {
   const wallet = useRecoilValue(walletState);
   const network = useRecoilValue(networkState);
   const { name } = useRecoilValue(selectedChatState);
+  const resetChat = useRecoilRefresher_UNSTABLE(messagesState);
 
   const postTx = useCallback(
     async (executeMsg, contract) => {
@@ -35,6 +41,7 @@ export default function Compose(props) {
 
         const pollResult = await pollTxInfo(wallet.network, result.txhash);
         console.log(pollResult);
+        resetChat();
       } catch (error) {
         console.error(error);
       }
