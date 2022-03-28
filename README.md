@@ -20,7 +20,7 @@ This is an experimental dapp that tries to re-create a messenger like experience
 ![image](https://user-images.githubusercontent.com/3447315/160289319-89e8a7ad-d18f-48df-b8da-821a86dd7045.png)
 
 ## Contract Design
-![image](https://user-images.githubusercontent.com/3447315/160289339-b2954da0-5ca0-42c9-95db-af97670cc575.png)
+![image](https://user-images.githubusercontent.com/3447315/160311252-59cc5019-710b-42cd-85f6-8b2135caf419.png)
 
 
 ### Query Messages
@@ -93,7 +93,7 @@ pub struct Message {
 Used to send a message to a wallet address. If no chat was created in the past between two wallets, this call will create a chat with a new `chat_id`. If a chat already exists, it will use that for the new message.
 
 ```rust
-SendMessage { data: String, to: String },
+SendMessage { text: String, to: String },
 ```
 
 ### Storage
@@ -150,6 +150,8 @@ This project currently includes scripts to deploy to a running LocalTerra. Deplo
 npm i
 ts-node scripts/deploy.ts
 ```
+
+Update the LocalTerra messenger contract address in `app/src/data/networks.js` before running the UI.
 
 ### (Optional) Seed contract with conversations
 
