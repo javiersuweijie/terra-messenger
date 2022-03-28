@@ -20,7 +20,6 @@ export default function ConversationList(props) {
   const postTx = useCallback(
     async (executeMsg, contract) => {
       if (!wallet || !contract) {
-        console.log(wallet, executeMsg, contract);
         return;
       }
 
@@ -33,7 +32,6 @@ export default function ConversationList(props) {
         });
 
         const pollResult = await pollTxInfo(wallet.network, result.txhash);
-        console.log(pollResult);
         resetChatList();
       } catch (error) {
         console.error(error);
@@ -48,7 +46,7 @@ export default function ConversationList(props) {
       postTx(
         {
           send_message: {
-            data: 'Hello! This is the start of our conversation',
+            text: 'Hello! This is the start of our conversation',
             to: name,
           },
         },

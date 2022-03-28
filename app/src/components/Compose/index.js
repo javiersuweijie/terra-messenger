@@ -60,7 +60,7 @@ export default function Compose(props) {
         postTx(
           {
             send_message: {
-              data: message,
+              text: message,
               to: name,
             },
           },

@@ -1,0 +1,1 @@
+1f9367de1024ff6f2970763ce2a71f3df3150f20777ea610760a34135f6b44dd  target/wasm32-unknown-unknown/release/messenger.wasm

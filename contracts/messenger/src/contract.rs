@@ -44,7 +44,7 @@ pub fn execute(
   msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
   match msg {
-    ExecuteMsg::SendMessage { data, to } => send_message(deps, info, env, data, to),
+    ExecuteMsg::SendMessage { text, to } => send_message(deps, info, env, text, to),
   }
 }
 
@@ -52,7 +52,7 @@ fn send_message(
   deps: DepsMut,
   info: MessageInfo,
   env: Env,
-  data: String,
+  text: String,
   to: String,
 ) -> Result<Response, ContractError> {
   let from = info.sender;
@@ -60,7 +60,7 @@ fn send_message(
   let message = Message {
     timestamp: env.block.time,
     from: from.to_string(),
-    text: data,
+    text: text,
   };
 
   let state = STATE.load(deps.storage)?;
